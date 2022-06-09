@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  sonnenbatterie-publisher:
+    build: .
+    restart: always
+    environment:
+      BATTERY_ADDRESS: ${BATTERY_ADDRESS}
+      BATTERY_AUTH_KEY: ${BATTERY_AUTH_KEY}
+      INFLUX_URL: "http://influx:8086"
+      INFLUX_AUTH: ${INFLUX_AUTH}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+      FREQUENCY_UPDATE: "5s"
+  influx:
+    image: influxdb:1.8
+    restart: always
+    environment:
+      INFLUXDB_DB: "influx"
+      INFLUXDB_ADMIN_USER: ${INFLUX_USERNAME}
+      INFLUXDB_ADMIN_PASSWORD: ${INFLUX_PASSWORD}
+    ports:
+      - "8086:8086"
+    volumes:
+      - $PWD/influxdb:/var/lib/influxdb
+      - $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+  influx-database-setup:
+    image: influxdb:1.8
+    restart: on-failure
+    command: influx -host "influx" -username "${INFLUX_USERNAME}" -password "${INFLUX_PASSWORD}" -execute "create database ${INFLUX_BUCKET}"
+  grafana:
+    image: grafana/grafana
+    restart: always
+    ports:
+      - "3000:3000"
