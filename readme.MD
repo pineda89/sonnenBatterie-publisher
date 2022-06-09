@@ -30,9 +30,11 @@ steps:
 - install 'raspberry os lite' on your raspberry (Raspberry Pi Imager)
 - ssh connect or GUI using hdmi if you prefer, open terminal
 - install docker : $ curl -fsSL https://get.docker.com | sh
+- install git: $ sudo apt-get install -y git
+- clone repository: $ git clone https://github.com/pineda89/sonnenBatterie-publisher.git
 - modify .env file with your desired values
 - $ docker compose up -d
-- go to http://host:3000 and login grafana (admin:admin)
+- in a browser in the same network, go to http://host:3000 and login grafana (admin:admin)
 - add influxdb as a datasource. The url is http://influx:8086 and user:password and database is in .env file
 - create your dashboard or import mine
 
